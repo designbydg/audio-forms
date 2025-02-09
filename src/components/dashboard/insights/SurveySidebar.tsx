@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -9,6 +10,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SurveySidebarProps {
   surveys: Array<{ id: string; title: string }>;
@@ -16,8 +19,18 @@ interface SurveySidebarProps {
   isMobile?: boolean;
 }
 
-export function SurveySidebar({ surveys, selectedSurveyId, isMobile }: SurveySidebarProps) {
+export function SurveySidebar({ surveys = [], selectedSurveyId, isMobile }: SurveySidebarProps) {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate('/login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   if (isMobile) {
     return (

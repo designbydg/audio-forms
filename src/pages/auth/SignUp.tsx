@@ -1,13 +1,13 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Eye, EyeOff, User, Mail } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 
 const SignUp = () => {
   const [error, setError] = useState<string>("");
@@ -72,21 +72,6 @@ const SignUp = () => {
     setLoading(false);
   };
 
-  const handleGoogleSignUp = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
-      });
-
-      if (error) throw error;
-    } catch (error: any) {
-      setError(getErrorMessage(error as AuthError));
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-4">
@@ -109,28 +94,6 @@ const SignUp = () => {
 
         <div className="bg-card rounded-lg shadow-lg p-6">
           <h1 className="text-2xl mb-6 text-center">Create an Account</h1>
-
-          <div className="grid gap-4 mb-6">
-            <Button
-              variant="outline"
-              onClick={handleGoogleSignUp}
-              disabled={loading}
-            >
-              <Mail className="mr-2 h-4 w-4" />
-              Continue with Google
-            </Button>
-          </div>
-
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
-              </span>
-            </div>
-          </div>
           
           <form onSubmit={handleSignUp} className="space-y-4">
             <div className="space-y-2">

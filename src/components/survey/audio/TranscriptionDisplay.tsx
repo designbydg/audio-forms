@@ -1,3 +1,4 @@
+
 interface TranscriptionDisplayProps {
   transcription: string | null;
   isTranscribing: boolean;
@@ -15,7 +16,7 @@ export function TranscriptionDisplay({
 
   if (transcription) {
     return (
-      <div className="bg-[#F8F9FC] rounded-lg p-4">
+      <div className="rounded-lg p-4">
         <p className="text-sm text-muted-foreground mb-2">
           {isTextResponse ? "Text Response:" : "Transcribed Text:"}
         </p>

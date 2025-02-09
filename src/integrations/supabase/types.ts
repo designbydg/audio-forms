@@ -316,7 +316,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      survey_response_rates: {
+        Row: {
+          bounce_rate: number | null
+          response_rate: number | null
+          starts: number | null
+          submissions: number | null
+          survey_id: string | null
+          views: number | null
+        }
+        Insert: {
+          bounce_rate?: never
+          response_rate?: never
+          starts?: number | null
+          submissions?: number | null
+          survey_id?: string | null
+          views?: number | null
+        }
+        Update: {
+          bounce_rate?: never
+          response_rate?: never
+          starts?: number | null
+          submissions?: number | null
+          survey_id?: string | null
+          views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_analytics_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: true
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       duplicate_survey: {

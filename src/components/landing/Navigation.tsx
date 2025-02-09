@@ -1,43 +1,42 @@
 
-import { Copyright, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getEmailLink } from "@/utils/emailUtils";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-export function Footer() {
+// Preload logo image
+const logoImage = "/lovable-uploads/4751f363-c733-49b1-98b3-51fb0b312ed5.png";
+
+export const Navigation = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
     <>
-      <footer className="py-6 border-t">
-        <div className="container flex flex-col items-center justify-center space-y-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Copyright className="h-4 w-4" />
-            <span>2025, Audioforms.</span>
-            <span className="flex items-center gap-1">
-              Made with <Heart className="h-4 w-4 text-red-500 fill-red-500" /> in the USA.
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/privacy-policy" className="hover:text-foreground transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms-of-use" className="hover:text-foreground transition-colors">
-              Terms of Use
-            </Link>
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-between items-center">
+          <img 
+            src={logoImage}
+            alt="AudioForms Logo"
+            className="h-12"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
+          <div className="flex gap-6 items-center">
             <button 
               onClick={() => setIsVideoOpen(true)}
-              className="hover:text-foreground transition-colors"
+              className="text-slate-600 hover:text-slate-900"
             >
               Product Demo
             </button>
-            <a href={getEmailLink()} className="hover:text-foreground transition-colors">
+            <a href={getEmailLink()} className="text-slate-600 hover:text-slate-900">
               Get in touch
             </a>
+            <Link to="/login" className="text-slate-600 hover:text-slate-900">Login</Link>
+            <Link to="/signup" className="text-slate-600 hover:text-slate-900">Sign up</Link>
           </div>
         </div>
-      </footer>
+      </div>
 
       <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
         <DialogContent className="sm:max-w-[800px] p-0">
@@ -56,4 +55,4 @@ export function Footer() {
       </Dialog>
     </>
   );
-}
+};

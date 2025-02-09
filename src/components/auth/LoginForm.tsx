@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,8 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, LogIn } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { LogIn } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
 
 export const LoginForm = () => {
@@ -62,21 +62,6 @@ export const LoginForm = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
-      });
-
-      if (error) throw error;
-    } catch (error: any) {
-      handleError(error);
-    }
-  };
-
   return (
     <div className="lg:p-8">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
@@ -87,28 +72,6 @@ export const LoginForm = () => {
           <p className="text-sm text-muted-foreground">
             Enter your email and password below to login
           </p>
-        </div>
-
-        <div className="grid gap-4">
-          <Button
-            variant="outline"
-            onClick={handleGoogleLogin}
-            disabled={loading}
-          >
-            <Mail className="mr-2 h-4 w-4" />
-            Continue with Google
-          </Button>
-        </div>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <Separator className="w-full" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">

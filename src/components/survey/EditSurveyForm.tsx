@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Plus, CreditCard } from "lucide-react";
 import { QuestionEditor } from "./QuestionEditor";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { useToast } from "@/components/ui/use-toast";
+import { getEmailLink } from "@/utils/emailUtils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +31,16 @@ export const EditSurveyForm = ({
   onQuestionsChange,
 }: EditSurveyFormProps) => {
   const [showUpgradeModal, setShowUpgradeModal] = React.useState(false);
+  const { toast } = useToast();
+
+  const handleUpgradeRequest = () => {
+    window.location.href = getEmailLink();
+    setShowUpgradeModal(false);
+    toast({
+      title: "Email client opened",
+      description: "Please compose your upgrade request email.",
+    });
+  };
 
   const addQuestion = () => {
     if (questions.length >= FREE_PLAN_QUESTION_LIMIT) {
@@ -97,9 +109,7 @@ export const EditSurveyForm = ({
             <AlertDialogCancel>Maybe Later</AlertDialogCancel>
             <AlertDialogAction
               className="bg-primary"
-              onClick={() => {
-                window.location.href = "mailto:contact@example.com?subject=Upgrade%20Survey%20Plan";
-              }}
+              onClick={handleUpgradeRequest}
             >
               Get in Touch
             </AlertDialogAction>

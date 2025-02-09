@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,40 +6,58 @@ import { Layout } from "@/components/layout/Layout";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SurveySelector } from "@/components/survey/responses/SurveySelector";
 import { ResponseTabs } from "@/components/survey/responses/ResponseTabs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const SurveyResponsesPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setUserId(session.user.id);
+      } else {
+        navigate('/login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const { data: surveys, isLoading: surveysLoading } = useQuery({
-    queryKey: ['user-surveys'],
+    queryKey: ['user-surveys', userId],
     queryFn: async () => {
+      if (!userId) return [];
+      
       const { data, error } = await supabase
         .from('surveys')
         .select('id, title, status')
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data;
     },
+    enabled: !!userId,
   });
 
   const { data: survey } = useQuery({
     queryKey: ['survey', id],
     queryFn: async () => {
-      if (!id) return null;
+      if (!id || !userId) return null;
       const { data, error } = await supabase
         .from('surveys')
         .select('title')
         .eq('id', id)
+        .eq('user_id', userId)
         .single();
 
       if (error) throw error;
       return data;
     },
-    enabled: !!id,
+    enabled: !!id && !!userId,
   });
 
   // Effect to select the latest published survey when no survey is selected

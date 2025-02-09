@@ -1,5 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { getEmailLink } from "@/utils/emailUtils";
 
 interface SurveyStatusProps {
   status: string;
@@ -26,16 +29,38 @@ const toTitleCase = (str: string) => {
 };
 
 export function SurveyStatus({ status }: SurveyStatusProps) {
+  const { toast } = useToast();
+
+  const handleUpgradeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.location.href = getEmailLink();
+    toast({
+      title: "Email client opened",
+      description: "Please compose your upgrade request email.",
+    });
+  };
+
   return (
-    <Badge
-      variant="secondary"
-      className={cn(
-        statusColors[status as keyof typeof statusColors] || "bg-gray-500",
-        statusTextColors[status as keyof typeof statusTextColors] || "text-white",
-        "hover:bg-opacity-100" // This prevents color change on hover
+    <div className="flex items-center gap-3">
+      <Badge
+        variant="secondary"
+        className={cn(
+          statusColors[status as keyof typeof statusColors] || "bg-gray-500",
+          statusTextColors[status as keyof typeof statusTextColors] || "text-white",
+          "hover:bg-opacity-100" // This prevents color change on hover
+        )}
+      >
+        {toTitleCase(status)}
+      </Badge>
+      {status === 'unavailable' && (
+        <Button
+          variant="link"
+          className="p-0 h-auto text-[#00A37A] hover:text-[#00A37A]/80 text-sm font-normal"
+          onClick={handleUpgradeClick}
+        >
+          Upgrade
+        </Button>
       )}
-    >
-      {toTitleCase(status)}
-    </Badge>
+    </div>
   );
 }

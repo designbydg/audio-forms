@@ -1,3 +1,4 @@
+
 import { format } from "date-fns";
 import { ResponseRenderer } from "./ResponseRenderer";
 import { AudioResponsePlayer } from "@/components/survey/AudioResponsePlayer";
@@ -30,7 +31,7 @@ export function ResponseItem({
         .from('transcriptions')
         .select('transcription')
         .eq('response_id', responseId)
-        .single();
+        .maybeSingle(); // Changed from .single() to .maybeSingle()
       
       if (error) throw error;
       return data?.transcription;

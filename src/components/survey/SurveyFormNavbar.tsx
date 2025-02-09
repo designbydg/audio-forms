@@ -7,6 +7,7 @@ import { NotificationsMenu } from "./navbar/NotificationsMenu";
 import { UserMenu } from "./navbar/UserMenu";
 import { NavItems } from "./navbar/NavItems";
 import { useToast } from "@/hooks/use-toast";
+import { HelpMenu } from "./navbar/HelpMenu";
 
 interface Notification {
   id: string;
@@ -144,6 +145,7 @@ export const SurveyFormNavbar = () => {
             notifications={notifications}
             setNotifications={setNotifications}
           />
+          <HelpMenu />
           <UserMenu userName={userName} />
         </div>
       </div>

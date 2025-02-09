@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -8,6 +9,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SurveySelectorProps {
   surveys: Array<{ id: string; title: string; status: string }>;
@@ -16,7 +20,19 @@ interface SurveySelectorProps {
   isMobile: boolean;
 }
 
-export function SurveySelector({ surveys, selectedSurveyId, onSurveySelect, isMobile }: SurveySelectorProps) {
+export function SurveySelector({ surveys = [], selectedSurveyId, onSurveySelect, isMobile }: SurveySelectorProps) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate('/login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
   if (isMobile) {
     return (
       <div className="mb-6 space-y-2">

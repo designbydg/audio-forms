@@ -1,7 +1,8 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/layout/Layout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Survey } from "@/types/survey";
@@ -13,10 +14,25 @@ const Surveys = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [selectedSurveys, setSelectedSurveys] = useState<string[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setUserId(session.user.id);
+      } else {
+        navigate('/login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const { data: surveys = [], isLoading } = useQuery({
-    queryKey: ['surveys'],
+    queryKey: ['surveys', userId],
     queryFn: async () => {
+      if (!userId) return [];
+
       const { data: surveys, error: surveysError } = await supabase
         .from('surveys')
         .select(`
@@ -26,6 +42,7 @@ const Surveys = () => {
           created_at,
           responses:responses(count)
         `)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (surveysError) {
@@ -41,6 +58,7 @@ const Surveys = () => {
         createdAt: survey.created_at
       })) as Survey[];
     },
+    enabled: !!userId,
   });
 
   const handleDelete = async (id: string) => {

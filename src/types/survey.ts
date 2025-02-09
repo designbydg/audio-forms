@@ -1,3 +1,4 @@
+
 export type SurveyStatus = "active" | "draft" | "closed" | "published";
 
 export interface Survey {
@@ -6,4 +7,9 @@ export interface Survey {
   status: SurveyStatus;
   responseCount: number;
   createdAt: string;
+  analytics?: {
+    views: number;
+    submissions: number;
+    starts: number;
+  };
 }
